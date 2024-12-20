@@ -53,30 +53,7 @@ class CategoryController extends Controller
     }
 
 
-/*
-    public function CategoryUpdate(Request $request){
 
-    	$cat_id = $request->id;
-
-      Category::findOrFail($cat_id)->update([
-		'category_name_en' => $request->category_name_en,
-		'category_name_hin' => $request->category_name_hin,
-		'category_slug_en' => strtolower(str_replace(' ', '-',$request->category_name_en)),
-		'category_slug_hin' => str_replace(' ', '-',$request->category_name_hin),
-		'category_icon' => $request->category_icon,
-
-    	]);
-
-	    $notification = array(
-			'message' => 'Category Updated Successfully',
-			'alert-type' => 'success'
-		);
-
-		return redirect()->route('all.category')->with($notification);
-
-
-    } // end method
-*/
 
 
 public function CategoryUpdate(Request $request) {
@@ -102,7 +79,9 @@ public function CategoryUpdate(Request $request) {
 
 
 
-    public function CategoryDelete($id){
+
+/*
+public function CategoryDelete($id){
 
     	Category::findOrFail($id)->delete();
 
@@ -114,7 +93,26 @@ public function CategoryUpdate(Request $request) {
 		return redirect()->back()->with($notification);
 
     } // end method 
+*/
+public function CategoryDelete($id)
+{
+    $category = Category::findOrFail($id);
 
+    // Check if the category has subcategories
+    if ($category->subcategories()->exists()) {
+        return response()->json([
+            'message' => 'This category cannot be deleted because it has subcategories.',
+            'alert-type' => 'error'
+        ], 400); // HTTP 400 Bad Request
+    }
+
+    $category->delete();
+
+    return response()->json([
+        'message' => 'Category Deleted Successfully',
+        'alert-type' => 'success'
+    ], 200);
+}
 
 }
  

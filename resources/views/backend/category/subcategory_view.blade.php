@@ -42,8 +42,10 @@
 		<td>
  <a href="{{ route('subcategory.edit',$item->id) }}" class="btn btn-info" title="Edit Data"><i class="fa fa-pencil"></i> </a>
 
- <a href="{{ route('subcategory.delete',$item->id) }}" class="btn btn-danger" title="Delete Data" id="delete">
- 	<i class="fa fa-trash"></i></a>
+ <a href="javascript:void(0);" class="btn btn-danger delete-subcategory" data-id="{{ $item->id }}" title="Delete Data">
+    <i class="fa fa-trash"></i>
+</a>
+
 		</td>
 							 
 	 </tr>
@@ -143,8 +145,53 @@
 		<!-- /.content -->
 	  
 	  </div>
-  
+	  <!-- SweetAlert Notification -->
+@if(session('message'))
+<script>
+    Swal.fire({
+        title: "{{ session('alert-type') == 'error' ? 'Error!' : 'Success!' }}",
+        text: "{{ session('message') }}",
+        icon: "{{ session('alert-type') }}",
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
 
+<!-- SweetAlert Delete Confirmation -->
+<script>
+	$(document).ready(function() {
+    // When category is selected
+    $('#category-select').on('change', function() {
+        let categoryId = $(this).val(); // Get selected category ID
+        if (categoryId) {
+            // AJAX call to fetch subcategories
+            $.ajax({
+                url: "{{ url('/subcategory/ajax') }}/" + categoryId,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // Clear and populate the subcategory dropdown
+                    $('#subcategory-select').empty();
+                    $('#subcategory-select').append('<option value="" disabled selected>Select SubCategory</option>');
+                    $.each(data, function(index, subcategory) {
+                        $('#subcategory-select').append('<option value="' + subcategory.id + '">' + subcategory.subcategory_name_en + '</option>');
+                    });
+                },
+                error: function(xhr) {
+                    console.error("Error fetching subcategories:", xhr);
+                }
+            });
+        } else {
+            // Reset subcategory dropdown if no category is selected
+            $('#subcategory-select').empty();
+            $('#subcategory-select').append('<option value="" disabled selected>Select SubCategory</option>');
+        }
+    });
+});
+
+
+	
+</script>
 
 
 @endsection
