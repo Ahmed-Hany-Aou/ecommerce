@@ -86,6 +86,7 @@ class subCategoryController extends Controller
 
 
 
+    /*
     public function SubCategoryDelete($id){
 
     	SubCategory::findOrFail($id)->delete();
@@ -98,6 +99,28 @@ class subCategoryController extends Controller
 		return redirect()->back()->with($notification);
 
     }
+        */
+        public function SubCategoryDelete($id)
+{
+    $subcategory = SubCategory::findOrFail($id);
+
+    // Check if the subcategory has sub-subcategories
+    if ($subcategory->subSubCategories()->exists()) {
+        return response()->json([
+            'message' => 'This subcategory cannot be deleted because it has sub-subcategories.',
+            'alert-type' => 'error'
+        ], 400); // HTTP 400 Bad Request
+    }
+
+    $subcategory->delete();
+
+    return response()->json([
+        'message' => 'Subcategory Deleted Successfully',
+        'alert-type' => 'success'
+    ], 200);
+}
+
+
 
 
   /////////////// That for SUB->SUBCATEGORY ////////////////
@@ -111,11 +134,20 @@ class subCategoryController extends Controller
      }
 
  
+    /*
      public function GetSubCategory($category_id){
 
      	$subcat = SubCategory::where('category_id',$category_id)->orderBy('subcategory_name_en','ASC')->get();
      	return json_encode($subcat);
      }
+*/
+public function GetSubCategory($category_id)
+{
+    $subcategories = SubCategory::where('category_id', $category_id)->orderBy('subcategory_name_en', 'ASC')->get();
+
+    // Return as JSON for AJAX
+    return response()->json($subcategories);
+}
 
 
 
@@ -190,6 +222,7 @@ public function SubSubCategoryStore(Request $request){
     } // end method 
 
 
+    /*
     public function SubSubCategoryDelete($id){
 
     	SubSubCategory::findOrFail($id)->delete();
@@ -201,7 +234,16 @@ public function SubSubCategoryStore(Request $request){
 		return redirect()->back()->with($notification);
 
     }
+*/
+public function SubSubCategoryDelete($id)
+{
+    $subsubcategory = SubSubCategory::findOrFail($id);
 
+    $subsubcategory->delete();
 
+    return response()->json([
+        'message' => 'Sub-Subcategory Deleted Successfully',
+        'alert-type' => 'success'
+    ], 200);
 }
- 
+}
