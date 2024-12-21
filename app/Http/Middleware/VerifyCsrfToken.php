@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
+     //   '/subcategory/store', // Add your store route here
     ];
 }

@@ -83,18 +83,37 @@ Route::prefix('brand')->group(function(){
     Route::get('/delete/{id}', [BrandController::class, 'BrandDelete'])->name('brand.delete');
 });
   // Admin Category all Routes  
-Route::prefix('category')->group(function(){
+//Route::prefix('category')->group(function(){
 
-    Route::get('/view', [CategoryController::class, 'CategoryView'])->name('all.category');
+   Route::get('/view', [CategoryController::class, 'CategoryView'])->name('all.category');
     
-    Route::post('/store', [CategoryController::class, 'CategoryStore'])->name('category.store');
+   Route::post('/store', [CategoryController::class, 'CategoryStore'])->name('category.store');
     
     Route::get('/edit/{id}', [CategoryController::class, 'CategoryEdit'])->name('category.edit');
     
-    Route::post('/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
-  //  Route::post('/category/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
+   // Route::post('/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
+   Route::post('/category/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
 
-   
+  Route::prefix('category')->group(function () {
+  //Route::get('/sub/view', [SubCategoryController::class, 'SubCategoryView'])->name('all.subcategory');
+    Route::post('/sub/store', [SubCategoryController::class, 'SubCategoryStore'])->name('subcategory.store');
+    Route::get('/sub/edit/{id}', [SubCategoryController::class, 'SubCategoryEdit'])->name('subcategory.edit');
+    Route::post('/subcategory/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update');
+    Route::get('/subcategory/delete/{id}', [SubCategoryController::class, 'SubCategoryDelete'])->name('subcategory.delete');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
     Route::get('/delete/{id}', [CategoryController::class, 'CategoryDelete'])->name('category.delete');
@@ -145,7 +164,6 @@ Route::get('/subcategory/ajax/{category_id}', [SubCategoryController::class, 'Ge
 
 
 
-});
     
     
     
