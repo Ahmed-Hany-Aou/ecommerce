@@ -51,7 +51,7 @@
                         <h3 class="box-title">Add Category</h3>
                     </div>
                     <div class="box-body">
-                        <form method="post" action="{{ route('category.store') }}">
+                        <form id="addCategoryForm" method="post" action="{{ route('category.store') }}">
                             @csrf
                             <div class="form-group">
                                 <h5>Category English <span class="text-danger">*</span></h5>
@@ -106,11 +106,51 @@
 </script>
 @endif
 
-<!-- SweetAlert Delete Confirmation -->
+<!-- SweetAlert JavaScript -->
 <script>
-    $(document).on('click', '.delete-category', function(e) {
-        e.preventDefault(); // Prevent default behavior for the click event
-        var id = $(this).data('id');
+    $(document).on('submit', '#addCategoryForm', function (e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+        let formAction = $(this).attr('action');
+        let submitButton = $(this).find('input[type="submit"]');
+
+        // Disable submit button
+        submitButton.prop('disabled', true);
+
+        $.ajax({
+            url: formAction,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            },
+            complete: function () {
+                submitButton.prop('disabled', false); // Re-enable the submit button
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-category', function () {
+        let id = $(this).data('id');
+
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -124,17 +164,23 @@
                 $.ajax({
                     url: "{{ route('category.delete', ':id') }}".replace(':id', id),
                     type: 'GET',
-                    success: function(response) {
-                        if (response['alert-type'] === 'success') {
-                            Swal.fire('Deleted!', response.message, 'success').then(() => {
-                                location.reload(); // Reload the page to update the list
-                            });
-                        } else {
-                            Swal.fire('Error!', response.message, 'error');
-                        }
+                    success: function (response) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();
+                        });
                     },
-                    error: function(xhr) {
-                        Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'cant delete because it is linked with SubCategory-- delete subcategory first',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 });
             }
