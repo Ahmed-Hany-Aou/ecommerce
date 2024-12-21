@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- SweetAlert Notification -->
+@if(session('message'))
+<script>
+    Swal.fire({
+        title: "{{ session('alert-type') == 'error' ? 'Error!' : 'Success!' }}",
+        text: "{{ session('message') }}",
+        icon: "{{ session('alert-type') }}",
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
   <head>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

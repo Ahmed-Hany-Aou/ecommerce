@@ -29,8 +29,7 @@
 				<div class="box-body">
 					<div class="table-responsive">
 
-
-		<form method="post" action="{{ route('category.update') }}">
+		<form method="POST" action="{{ route('category.update') }}">
 	 	@csrf
 					   
 	 	<input type="hidden" name="id" value="{{ $category->id }}">
