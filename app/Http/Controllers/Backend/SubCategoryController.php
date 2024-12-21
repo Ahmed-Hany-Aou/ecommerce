@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\SubCategory;
 use App\Models\Category;
 use App\Models\SubSubCategory;
+use Illuminate\Support\Str;
+
 
 class subCategoryController extends Controller
 {
@@ -19,37 +21,31 @@ class subCategoryController extends Controller
     }
 
 
-     public function SubCategoryStore(Request $request){
+	public function SubCategoryStore(Request $request)
+{
+    $request->validate([
+        'category_id' => 'required|exists:categories,id',
+        'subcategory_name_en' => 'required|string|max:255',
+        'subcategory_name_hin' => 'required|string|max:255',
+    ]);
 
-       $request->validate([
-    		'category_id' => 'required',
-    		'subcategory_name_en' => 'required',
-    		'subcategory_name_hin' => 'required',
-    	],[
-    		'category_id.required' => 'Please select Any option',
-    		'subcategory_name_en.required' => 'Input SubCategory English Name',
-    	]);
+    SubCategory::create([
+        'category_id' => $request->category_id,
+        'subcategory_name_en' => $request->subcategory_name_en,
+        'subcategory_name_hin' => $request->subcategory_name_hin,
+        'subcategory_slug_en' => Str::slug($request->subcategory_name_en),
+        'subcategory_slug_hin' => Str::slug($request->subcategory_name_hin),
+    ]);
 
-    	 
+    // Return JSON response
+    return response()->json([
+        'message' => 'SubCategory Inserted Successfully',
+        'alert-type' => 'success',
+    ], 200);
+}
 
-	   SubCategory::insert([
-		'category_id' => $request->category_id,
-		'subcategory_name_en' => $request->subcategory_name_en,
-		'subcategory_name_hin' => $request->subcategory_name_hin,
-		'subcategory_slug_en' => strtolower(str_replace(' ', '-',$request->subcategory_name_en)),
-		'subcategory_slug_hin' => str_replace(' ', '-',$request->subcategory_name_hin),
-		 
 
-    	]);
 
-	    $notification = array(
-			'message' => 'SubCategory Inserted Successfully',
-			'alert-type' => 'success'
-		);
-
-		return redirect()->back()->with($notification);
-
-    } // end method 
 
 
 
@@ -61,27 +57,39 @@ class subCategoryController extends Controller
     }
 
 
-	public function SubCategoryUpdate(Request $request) {
-		$subcat_id = $request->id;
-	
-		// Debugging step: Log the input data and check the request
-	//	dd($request->all());
-	
-		SubCategory::findOrFail($subcat_id)->update([
-			'category_id' => $request->category_id,
-			'subcategory_name_en' => $request->subcategory_name_en,
-			'subcategory_name_hin' => $request->subcategory_name_hin,
-			'subcategory_slug_en' => strtolower(str_replace(' ', '-', $request->subcategory_name_en)),
-			'subcategory_slug_hin' => str_replace(' ', '-', $request->subcategory_name_hin),
+	public function SubCategoryUpdate(Request $request)
+	{
+		$request->validate([
+			'id' => 'required|exists:sub_categories,id',
+			'subcategory_name_en' => 'required|string|max:255',
+			'subcategory_name_hin' => 'required|string|max:255',
+			'category_id' => 'required|exists:categories,id',
 		]);
 	
-		$notification = array(
-			'message' => 'SubCategory Updated Successfully',
-			'alert-type' => 'info'
-		);
+		$subcategory = SubCategory::findOrFail($request->id);
+		$subcategory->update([
+			'subcategory_name_en' => $request->subcategory_name_en,
+			'subcategory_name_hin' => $request->subcategory_name_hin,
+			'subcategory_slug_en' => Str::slug($request->subcategory_name_en),
+			'subcategory_slug_hin' => Str::slug($request->subcategory_name_hin),
+			'category_id' => $request->category_id,
+		]);
 	
-		return redirect()->route('all.subcategory')->with($notification);
+		// Check if the request is AJAX
+		if ($request->ajax()) {
+			return response()->json([
+				'message' => 'SubCategory Updated Successfully',
+				'alert-type' => 'success',
+			]);
+		}
+	
+		// Redirect to the SubCategory List for non-AJAX requests
+		return redirect()->route('all.subcategory')->with([
+			'message' => 'SubCategory Updated Successfully',
+			'alert-type' => 'success',
+		]);
 	}
+	
 	
 
 

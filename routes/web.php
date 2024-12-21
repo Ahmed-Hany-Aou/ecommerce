@@ -105,13 +105,15 @@ Route::prefix('category')->group(function(){
     
     Route::get('/sub/view', [SubCategoryController::class, 'SubCategoryView'])->name('all.subcategory');
     
-    Route::post('/sub/store', [SubCategoryController::class, 'SubCategoryStore'])->name('subcategory.store');
+    //Route::post('/sub/store', [SubCategoryController::class, 'SubCategoryStore'])->name('subcategory.store');
+    Route::post('/subcategory/store', [SubCategoryController::class, 'SubCategoryStore'])->name('subcategory.store');
+
     
     Route::get('/sub/edit/{id}', [SubCategoryController::class, 'SubCategoryEdit'])->name('subcategory.edit');
     
    // Route::post('/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update');
-    Route::post('/sub/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update'); // Updated name because it was conflicting with above route
-    
+   // Route::post('/sub/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update'); // Updated name because it was conflicting with above route
+   Route::post('/subcategory/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update');
    
     
    Route::get('/sub/delete/{id}', [SubCategoryController::class, 'SubCategoryDelete'])->name('subcategory.delete');
