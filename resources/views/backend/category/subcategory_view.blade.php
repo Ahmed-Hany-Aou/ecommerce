@@ -28,11 +28,12 @@
                                         <td>{{ $item->subcategory_name_en }}</td>
                                         <td>{{ $item->subcategory_name_hin }}</td>
                                         <td width="30%">
-                                            <a href="{{ route('subcategory.edit', $item->id) }}" class="btn btn-info" title="Edit Data"><i class="fa fa-pencil"></i></a>
+                                            <a href="{{ route('subcategory.edit', $item->id) }}" class="btn btn-info" title="Edit Data">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
                                             <a href="javascript:void(0);" class="btn btn-danger delete-subcategory" data-id="{{ $item->id }}" title="Delete Data">
                                                 <i class="fa fa-trash"></i>
                                             </a>
-                                            
                                         </td>
                                     </tr>
                                     @endforeach
@@ -98,7 +99,6 @@
     </section>
 </div>
 
-<!-- AJAX Script for Dynamic Dropdown -->
 <!-- SweetAlert Notification -->
 @if(session('message'))
 <script>
@@ -112,9 +112,49 @@
 @endif
 
 <script>
-    $(document).on('click', '.delete-subcategory', function (e) {
-        e.preventDefault(); // Prevent default link behavior
-        var id = $(this).data('id'); // Use the data-id attribute to fetch the ID
+    // Handle Add SubCategory Form Submission
+    $(document).on('submit', 'form[action="{{ route('subcategory.store') }}"]', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        let formData = new FormData(this);
+        let formAction = $(this).attr('action');
+
+        // Disable the submit button to avoid duplicate submissions
+        $(this).find('input[type="submit"]').prop('disabled', true);
+
+        $.ajax({
+            url: formAction,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response['alert-type'] === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        location.reload(); // Reload the page to reflect the new subcategory
+                    });
+                } else {
+                    Swal.fire('Error!', response.message, 'error');
+                }
+            },
+            error: function (xhr) {
+                Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
+            },
+            complete: function () {
+                // Re-enable the submit button
+                $('form[action="{{ route('subcategory.store') }}"]').find('input[type="submit"]').prop('disabled', false);
+            },
+        });
+    });
+
+    // Handle Delete SubCategory with SweetAlert
+    $(document).on('click', '.delete-subcategory', function () {
+        let id = $(this).data('id');
 
         Swal.fire({
             title: 'Are you sure?',
@@ -123,37 +163,33 @@
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('subcategory.delete', ':id') }}".replace(':id', id), // Route with dynamic ID
+                    url: "{{ route('subcategory.delete', ':id') }}".replace(':id', id),
                     type: 'GET',
                     success: function (response) {
-                        Swal.fire({
-                            title: response['alert-type'] === 'error' ? 'Error!' : 'Deleted!',
-                            text: response.message,
-                            icon: response['alert-type'],
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            if (response['alert-type'] !== 'error') {
-                                location.reload(); // Reload page only if the delete was successful
-                            }
-                        });
+                        if (response['alert-type'] === 'success') {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                            }).then(() => {
+                                location.reload(); // Reload the page to update the list
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
                     },
                     error: function (xhr) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: xhr.responseJSON?.message || 'Something went wrong.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                        Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
+                    },
                 });
             }
         });
     });
 </script>
-
 
 @endsection
