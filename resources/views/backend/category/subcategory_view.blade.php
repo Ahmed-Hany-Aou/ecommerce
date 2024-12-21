@@ -51,7 +51,7 @@
                         <h3 class="box-title">Add SubCategory</h3>
                     </div>
                     <div class="box-body">
-                        <form method="post" action="{{ route('subcategory.store') }}">
+                        <form id="addSubCategoryForm" method="post" action="{{ route('subcategory.store') }}">
                             @csrf
                             <div class="form-group">
                                 <h5>Category Select <span class="text-danger">*</span></h5>
@@ -111,16 +111,18 @@
 </script>
 @endif
 
+<!-- SweetAlert JavaScript -->
 <script>
     // Handle Add SubCategory Form Submission
-    $(document).on('submit', 'form[action="{{ route('subcategory.store') }}"]', function (e) {
+    $(document).on('submit', '#addSubCategoryForm', function (e) {
         e.preventDefault(); // Prevent default form submission
 
         let formData = new FormData(this);
         let formAction = $(this).attr('action');
+        let submitButton = $(this).find('input[type="submit"]');
 
-        // Disable the submit button to avoid duplicate submissions
-        $(this).find('input[type="submit"]').prop('disabled', true);
+        // Disable submit button to avoid duplicate submissions
+        submitButton.prop('disabled', true);
 
         $.ajax({
             url: formAction,
@@ -129,26 +131,26 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                if (response['alert-type'] === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: response.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                    }).then(() => {
-                        location.reload(); // Reload the page to reflect the new subcategory
-                    });
-                } else {
-                    Swal.fire('Error!', response.message, 'error');
-                }
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload(); // Reload the page to reflect the new subcategory
+                });
             },
-            error: function (xhr) {
-                Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
+            error: function () {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             },
             complete: function () {
-                // Re-enable the submit button
-                $('form[action="{{ route('subcategory.store') }}"]').find('input[type="submit"]').prop('disabled', false);
-            },
+                submitButton.prop('disabled', false); // Re-enable the submit button
+            }
         });
     });
 
@@ -163,29 +165,30 @@
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
                     url: "{{ route('subcategory.delete', ':id') }}".replace(':id', id),
                     type: 'GET',
                     success: function (response) {
-                        if (response['alert-type'] === 'success') {
-                            Swal.fire({
-                                title: 'Deleted!',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK',
-                            }).then(() => {
-                                location.reload(); // Reload the page to update the list
-                            });
-                        } else {
-                            Swal.fire('Error!', response.message, 'error');
-                        }
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload(); // Reload the page to update the list
+                        });
                     },
-                    error: function (xhr) {
-                        Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
-                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Something went wrong. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
             }
         });

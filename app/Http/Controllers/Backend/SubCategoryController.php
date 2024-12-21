@@ -21,28 +21,38 @@ class subCategoryController extends Controller
     }
 
 
-	public function SubCategoryStore(Request $request)
-{
-    $request->validate([
-        'category_id' => 'required|exists:categories,id',
-        'subcategory_name_en' => 'required|string|max:255',
-        'subcategory_name_hin' => 'required|string|max:255',
-    ]);
+	public function SubCategoryStore(Request $request){
 
-    SubCategory::create([
-        'category_id' => $request->category_id,
-        'subcategory_name_en' => $request->subcategory_name_en,
-        'subcategory_name_hin' => $request->subcategory_name_hin,
-        'subcategory_slug_en' => Str::slug($request->subcategory_name_en),
-        'subcategory_slug_hin' => Str::slug($request->subcategory_name_hin),
-    ]);
-
-    // Return JSON response
-    return response()->json([
-        'message' => 'SubCategory Inserted Successfully',
-        'alert-type' => 'success',
-    ], 200);
-}
+		$request->validate([
+			 'category_id' => 'required',
+			 'subcategory_name_en' => 'required',
+			 'subcategory_name_hin' => 'required',
+		 ],[
+			 'category_id.required' => 'Please select Any option',
+			 'subcategory_name_en.required' => 'Input SubCategory English Name',
+		 ]);
+ 
+		  
+ 
+		SubCategory::insert([
+		 'category_id' => $request->category_id,
+		 'subcategory_name_en' => $request->subcategory_name_en,
+		 'subcategory_name_hin' => $request->subcategory_name_hin,
+		 'subcategory_slug_en' => strtolower(str_replace(' ', '-',$request->subcategory_name_en)),
+		 'subcategory_slug_hin' => str_replace(' ', '-',$request->subcategory_name_hin),
+		  
+ 
+		 ]);
+ 
+		 $notification = array(
+			 'message' => 'SubCategory Inserted Successfully',
+			 'alert-type' => 'success'
+		 );
+ 
+		 return redirect()->back()->with($notification);
+ 
+	 } // end method 
+ 
 
 
 
@@ -110,25 +120,24 @@ class subCategoryController extends Controller
         */
 		
 		public function SubCategoryDelete($id)
-		{
-			$subcategory = SubCategory::findOrFail($id);
-		
-			// Check if the subcategory has sub-subcategories
-			if ($subcategory->subSubCategories()->exists()) {
-				return response()->json([
-					'message' => 'This subcategory cannot be deleted because it has sub-subcategories.',
-					'alert-type' => 'error'
-				], 400); // HTTP 400 Bad Request
-			}
-		
-			$subcategory->delete();
-		
-			return response()->json([
-				'message' => 'Subcategory Deleted Successfully',
-				'alert-type' => 'success'
-			], 200);
-		}
-		
+{
+    $subcategory = SubCategory::findOrFail($id);
+
+    // Check if the subcategory has sub-subcategories
+    if ($subcategory->subSubCategories()->exists()) {
+        return response()->json([
+            'message' => 'This subcategory cannot be deleted because it has sub-subcategories.',
+            'alert-type' => 'error',
+        ], 400); // HTTP 400 Bad Request
+    }
+
+    $subcategory->delete();
+
+    return response()->json([
+        'message' => 'SubCategory Deleted Successfully',
+        'alert-type' => 'success',
+    ], 200);
+}
 
 
 

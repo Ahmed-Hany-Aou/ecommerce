@@ -15,7 +15,7 @@
                     <div class="box-body">
                         <div class="table-responsive">
                             <!-- Start the form here -->
-                            <form method="post" action="{{ route('subcategory.update') }}">
+                            <form id="editSubCategoryForm" method="post" action="{{ route('subcategory.update') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $subcategory->id }}">
 
@@ -75,13 +75,29 @@
     <!-- /.content -->
 </div>
 
+<!-- SweetAlert for Notifications -->
+@if(session('message'))
+<script>
+    Swal.fire({
+        title: "{{ session('alert-type') == 'error' ? 'Error!' : 'Success!' }}",
+        text: "{{ session('message') }}",
+        icon: "{{ session('alert-type') }}",
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
 <!-- JavaScript for AJAX Form Submission -->
 <script>
-    $(document).on('submit', 'form[action="{{ route('subcategory.update') }}"]', function (e) {
+    $(document).on('submit', '#editSubCategoryForm', function (e) {
         e.preventDefault(); // Prevent default form submission
 
         let formData = new FormData(this);
         let formAction = $(this).attr('action');
+        let submitButton = $(this).find('input[type="submit"]');
+
+        // Disable submit button to avoid duplicate submissions
+        submitButton.prop('disabled', true);
 
         $.ajax({
             url: formAction,
@@ -95,18 +111,20 @@
                         title: 'Success!',
                         text: response.message,
                         icon: 'success',
-                        confirmButtonText: 'OK',
+                        confirmButtonText: 'OK'
                     }).then(() => {
-                        window.location.href = "{{ route('all.subcategory') }}"; // Redirect to SubCategory List
+                        window.location.href = "{{ route('all.subcategory') }}"; // Redirect to subcategory list
                     });
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
             },
-            error: function (xhr) {
-                let error = xhr.responseJSON?.message || 'Something went wrong. Please try again.';
-                Swal.fire('Error!', error, 'error');
+            error: function () {
+                Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
             },
+            complete: function () {
+                submitButton.prop('disabled', false); // Re-enable the submit button
+            }
         });
     });
 </script>
