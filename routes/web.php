@@ -92,6 +92,10 @@ Route::prefix('category')->group(function(){
     Route::get('/edit/{id}', [CategoryController::class, 'CategoryEdit'])->name('category.edit');
     
     Route::post('/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
+  //  Route::post('/category/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
+
+   
+
     
     Route::get('/delete/{id}', [CategoryController::class, 'CategoryDelete'])->name('category.delete');
    
@@ -107,6 +111,8 @@ Route::prefix('category')->group(function(){
     
    // Route::post('/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update');
     Route::post('/sub/update', [SubCategoryController::class, 'SubCategoryUpdate'])->name('subcategory.update'); // Updated name because it was conflicting with above route
+    
+   
     
    Route::get('/sub/delete/{id}', [SubCategoryController::class, 'SubCategoryDelete'])->name('subcategory.delete');
     
@@ -129,9 +135,12 @@ Route::post('/sub/update', [SubCategoryController::class, 'SubSubCategoryUpdate'
 
 //Route::get('/sub/sub/delete/{id}', [SubCategoryController::class, 'SubSubCategoryDelete'])->name('subsubcategory.delete');
 //Route::get('/subsubcategory/delete/{id}', [SubCategoryController::class, 'SubSubCategoryDelete'])->name('subsubcategory.delete');
-Route::get('/subsubcategory/delete/{id}', [SubCategoryController::class, 'SubSubCategoryDelete'])->name('subsubcategory.delete');
+//Route::get('/subsubcategory/delete/{id}', [SubCategoryController::class, 'SubSubCategoryDelete'])->name('subsubcategory.delete');
+Route::get('/sub/sub/delete/{id}', [SubCategoryController::class, 'SubSubCategoryDelete'])->name('subsubcategory.delete');
+
 
 Route::get('/subcategory/ajax/{category_id}', [SubCategoryController::class, 'GetSubCategory'])->name('subcategory.ajax');
+
 
 
 });

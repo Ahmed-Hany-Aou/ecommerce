@@ -61,28 +61,28 @@ class subCategoryController extends Controller
     }
 
 
-    public function SubCategoryUpdate(Request $request){
-
-    	$subcat_id = $request->id;
-
-    	 SubCategory::findOrFail($subcat_id)->update([
-		'category_id' => $request->category_id,
-		'subcategory_name_en' => $request->subcategory_name_en,
-		'subcategory_name_hin' => $request->subcategory_name_hin,
-		'subcategory_slug_en' => strtolower(str_replace(' ', '-',$request->subcategory_name_en)),
-		'subcategory_slug_hin' => str_replace(' ', '-',$request->subcategory_name_hin),
-		 
-
-    	]);
-
-	    $notification = array(
+	public function SubCategoryUpdate(Request $request) {
+		$subcat_id = $request->id;
+	
+		// Debugging step: Log the input data and check the request
+	//	dd($request->all());
+	
+		SubCategory::findOrFail($subcat_id)->update([
+			'category_id' => $request->category_id,
+			'subcategory_name_en' => $request->subcategory_name_en,
+			'subcategory_name_hin' => $request->subcategory_name_hin,
+			'subcategory_slug_en' => strtolower(str_replace(' ', '-', $request->subcategory_name_en)),
+			'subcategory_slug_hin' => str_replace(' ', '-', $request->subcategory_name_hin),
+		]);
+	
+		$notification = array(
 			'message' => 'SubCategory Updated Successfully',
 			'alert-type' => 'info'
 		);
-
+	
 		return redirect()->route('all.subcategory')->with($notification);
-
-    }  // end method
+	}
+	
 
 
 
@@ -100,38 +100,41 @@ class subCategoryController extends Controller
 
     }
         */
-        public function SubCategoryDelete($id)
-{
-    $subcategory = SubCategory::findOrFail($id);
+		
+		public function SubCategoryDelete($id)
+		{
+			$subcategory = SubCategory::findOrFail($id);
+		
+			// Check if the subcategory has sub-subcategories
+			if ($subcategory->subSubCategories()->exists()) {
+				return response()->json([
+					'message' => 'This subcategory cannot be deleted because it has sub-subcategories.',
+					'alert-type' => 'error'
+				], 400); // HTTP 400 Bad Request
+			}
+		
+			$subcategory->delete();
+		
+			return response()->json([
+				'message' => 'Subcategory Deleted Successfully',
+				'alert-type' => 'success'
+			], 200);
+		}
+		
 
-    // Check if the subcategory has sub-subcategories
-    if ($subcategory->subSubCategories()->exists()) {
-        return response()->json([
-            'message' => 'This subcategory cannot be deleted because it has sub-subcategories.',
-            'alert-type' => 'error'
-        ], 400); // HTTP 400 Bad Request
-    }
-
-    $subcategory->delete();
-
-    return response()->json([
-        'message' => 'Subcategory Deleted Successfully',
-        'alert-type' => 'success'
-    ], 200);
-}
 
 
 
 
   /////////////// That for SUB->SUBCATEGORY ////////////////
 
- public function SubSubCategoryView(){
+  public function SubSubCategoryView() {
+    $categories = Category::orderBy('category_name_en', 'ASC')->get();
+    $subsubcategory = SubSubCategory::with(['category', 'subcategory'])->latest()->get();
+    return view('backend.category.sub_subcategory_view', compact('subsubcategory', 'categories'));
+}
 
- 	$categories = Category::orderBy('category_name_en','ASC')->get();
-    	$subsubcategory = SubSubCategory::latest()->get();
-    	return view('backend.category.sub_subcategory_view',compact('subsubcategory','categories'));
 
-     }
 
  
     /*
@@ -151,39 +154,39 @@ public function GetSubCategory($category_id)
 
 
 
-public function SubSubCategoryStore(Request $request){
+public function SubSubCategoryStore(Request $request)
+{
+    $request->validate([
+        'category_id' => 'required',
+        'subcategory_id' => 'required',
+        'subsubcategory_name_en' => 'required',
+        'subsubcategory_name_hin' => 'required',
+    ], [
+        'category_id.required' => 'Please select a category',
+        'subsubcategory_name_en.required' => 'Input Sub-SubCategory English Name',
+    ]);
 
-       $request->validate([
-    		'category_id' => 'required',
-    		'subcategory_id' => 'required',
-    		'subsubcategory_name_en' => 'required',
-    		'subsubcategory_name_hin' => 'required',
-    	],[
-    		'category_id.required' => 'Please select Any option',
-    		'subsubcategory_name_en.required' => 'Input SubSubCategory English Name',
-    	]);
+    $subSubCategory = SubSubCategory::create([
+        'category_id' => $request->category_id,
+        'subcategory_id' => $request->subcategory_id,
+        'subsubcategory_name_en' => $request->subsubcategory_name_en,
+        'subsubcategory_name_hin' => $request->subsubcategory_name_hin,
+        'subsubcategory_slug_en' => strtolower(str_replace(' ', '-', $request->subsubcategory_name_en)),
+        'subsubcategory_slug_hin' => str_replace(' ', '-', $request->subsubcategory_name_hin),
+    ]);
 
-    	 
+    return response()->json([
+        'message' => 'Sub-SubCategory Inserted Successfully',
+        'data' => [
+            'id' => $subSubCategory->id,
+            'category_name' => $subSubCategory->category->category_name_en,
+            'subcategory_name' => $subSubCategory->subcategory->subcategory_name_en,
+            'subsubcategory_name_en' => $subSubCategory->subsubcategory_name_en,
+        ],
+        'alert-type' => 'success',
+    ], 200);
+}
 
-	   SubSubCategory::insert([
-		'category_id' => $request->category_id,
-		'subcategory_id' => $request->subcategory_id,
-		'subsubcategory_name_en' => $request->subsubcategory_name_en,
-		'subsubcategory_name_hin' => $request->subsubcategory_name_hin,
-		'subsubcategory_slug_en' => strtolower(str_replace(' ', '-',$request->subsubcategory_name_en)),
-		'subsubcategory_slug_hin' => str_replace(' ', '-',$request->subsubcategory_name_hin),
-		 
-
-    	]);
-
-	    $notification = array(
-			'message' => 'Sub-SubCategory Inserted Successfully',
-			'alert-type' => 'success'
-		);
-
-		return redirect()->back()->with($notification);
-
-    } // end method 
 
 
 
@@ -196,32 +199,29 @@ public function SubSubCategoryStore(Request $request){
     }
 
 
-
-    public function SubSubCategoryUpdate(Request $request){
-
-    	$subsubcat_id = $request->id;
-
-    	SubSubCategory::findOrFail($subsubcat_id)->update([
-		'category_id' => $request->category_id,
-		'subcategory_id' => $request->subcategory_id,
-		'subsubcategory_name_en' => $request->subsubcategory_name_en,
-		'subsubcategory_name_hin' => $request->subsubcategory_name_hin,
-		'subsubcategory_slug_en' => strtolower(str_replace(' ', '-',$request->subsubcategory_name_en)),
-		'subsubcategory_slug_hin' => str_replace(' ', '-',$request->subsubcategory_name_hin),
-		 
-
-    	]);
-
-	    $notification = array(
-			'message' => 'Sub-SubCategory Update Successfully',
+	public function SubSubCategoryUpdate(Request $request) {
+		$subsubcat_id = $request->id;
+	
+		// Debugging step: Log the input data and check the request
+		//dd($request->all());
+	
+		SubSubCategory::findOrFail($subsubcat_id)->update([
+			'category_id' => $request->category_id,
+			'subcategory_id' => $request->subcategory_id,
+			'subsubcategory_name_en' => $request->subsubcategory_name_en,
+			'subsubcategory_name_hin' => $request->subsubcategory_name_hin,
+			'subsubcategory_slug_en' => strtolower(str_replace(' ', '-', $request->subsubcategory_name_en)),
+			'subsubcategory_slug_hin' => str_replace(' ', '-', $request->subsubcategory_name_hin),
+		]);
+	
+		$notification = array(
+			'message' => 'Sub-SubCategory Updated Successfully',
 			'alert-type' => 'info'
 		);
-
+	
 		return redirect()->route('all.subsubcategory')->with($notification);
-
-    } // end method 
-
-
+	}
+	
     /*
     public function SubSubCategoryDelete($id){
 
@@ -239,11 +239,15 @@ public function SubSubCategoryDelete($id)
 {
     $subsubcategory = SubSubCategory::findOrFail($id);
 
+    // Delete the Sub-SubCategory
     $subsubcategory->delete();
 
+    // Return a JSON response for SweetAlert
     return response()->json([
-        'message' => 'Sub-Subcategory Deleted Successfully',
-        'alert-type' => 'success'
+        'message' => 'Sub-SubCategory Deleted Successfully',
+        'alert-type' => 'success',
     ], 200);
 }
+
+
 }
