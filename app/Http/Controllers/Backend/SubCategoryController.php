@@ -170,7 +170,6 @@ public function GetSubCategory($category_id)
 }
 
 
-
 public function SubSubCategoryStore(Request $request)
 {
     $request->validate([
@@ -178,30 +177,23 @@ public function SubSubCategoryStore(Request $request)
         'subcategory_id' => 'required',
         'subsubcategory_name_en' => 'required',
         'subsubcategory_name_hin' => 'required',
-    ], [
-        'category_id.required' => 'Please select a category',
-        'subsubcategory_name_en.required' => 'Input Sub-SubCategory English Name',
     ]);
 
-    $subSubCategory = SubSubCategory::create([
+    // Insert the new sub-subcategory
+    SubSubCategory::create([
         'category_id' => $request->category_id,
         'subcategory_id' => $request->subcategory_id,
         'subsubcategory_name_en' => $request->subsubcategory_name_en,
         'subsubcategory_name_hin' => $request->subsubcategory_name_hin,
-        'subsubcategory_slug_en' => strtolower(str_replace(' ', '-', $request->subsubcategory_name_en)),
-        'subsubcategory_slug_hin' => str_replace(' ', '-', $request->subsubcategory_name_hin),
+        'subsubcategory_slug_en' => Str::slug($request->subsubcategory_name_en),
+        'subsubcategory_slug_hin' => Str::slug($request->subsubcategory_name_hin),
     ]);
 
+    // Return success response
     return response()->json([
-        'message' => 'Sub-SubCategory Inserted Successfully',
-        'data' => [
-            'id' => $subSubCategory->id,
-            'category_name' => $subSubCategory->category->category_name_en,
-            'subcategory_name' => $subSubCategory->subcategory->subcategory_name_en,
-            'subsubcategory_name_en' => $subSubCategory->subsubcategory_name_en,
-        ],
-        'alert-type' => 'success',
-    ], 200);
+        'message' => 'Sub-SubCategory Added Successfully!',
+        'alert-type' => 'success'
+    ]);
 }
 
 

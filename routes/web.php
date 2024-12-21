@@ -94,6 +94,9 @@ Route::prefix('brand')->group(function(){
    // Route::post('/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
    Route::post('/category/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
 
+
+   
+
   Route::prefix('category')->group(function () {
   //Route::get('/sub/view', [SubCategoryController::class, 'SubCategoryView'])->name('all.subcategory');
     Route::post('/sub/store', [SubCategoryController::class, 'SubCategoryStore'])->name('subcategory.store');
