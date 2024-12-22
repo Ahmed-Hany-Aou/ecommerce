@@ -161,6 +161,8 @@ class subCategoryController extends Controller
      	return json_encode($subcat);
      }
 */
+
+
 public function GetSubCategory($category_id)
 {
     $subcategories = SubCategory::where('category_id', $category_id)->orderBy('subcategory_name_en', 'ASC')->get();
@@ -168,6 +170,20 @@ public function GetSubCategory($category_id)
     // Return as JSON for AJAX
     return response()->json($subcategories);
 }
+
+
+/*
+	public function GetSubCategory($subcategory_id)
+{
+    $subsubcategories = SubSubCategory::where('subcategory_id', $subcategory_id)->orderBy('subsubcategory_name_en')->get();
+
+    // Return the result as JSON
+    return response()->json($subsubcategories);
+}
+*/
+
+
+
 
 
 public function SubSubCategoryStore(Request $request)

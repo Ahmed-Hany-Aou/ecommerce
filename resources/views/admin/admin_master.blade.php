@@ -72,7 +72,20 @@
 </div>
 <!-- ./wrapper -->
   	
+
+<!-- /// Tgas Input Script -->
+<script src="{{ asset('../assets/vendor_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js') }}"></script>
+
+<!-- // CK EDITOR  --> 
+ <script src="{{ asset('../assets/vendor_components/ckeditor/ckeditor.js') }}"></script>
+ <script src="{{ asset('../assets/vendor_plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js') }}"></script>
+ <script src="{{ asset('backend/js/pages/editor.js') }}"></script>
+
 	 
+
+
+
+
 	<!-- Vendor JS -->
 	<script src="{{ asset('backend/js/vendors.min.js') }}"></script>
     <script src="{{ asset('../assets/icons/feather-icons/feather.min.js') }}"></script>	
