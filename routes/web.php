@@ -129,7 +129,8 @@ Route::get('/sub/sub/edit/{id}', [SubCategoryController::class, 'SubSubCategoryE
 Route::post('/sub/update', [SubCategoryController::class, 'SubSubCategoryUpdate'])->name('subsubcategory.update');
 Route::get('/sub/sub/delete/{id}', [SubCategoryController::class, 'SubSubCategoryDelete'])->name('subsubcategory.delete');
 Route::get('/subcategory/ajax/{category_id}', [SubCategoryController::class, 'GetSubCategory'])->name('subcategory.ajax');
-Route::get('/subcategory/ajax/{subcategory_id}', [SubCategoryController::class, 'GetSubCategory'])->name('subcategory.ajax');
+Route::get('/subsubcategory/ajax/{subcategory_id}', [SubCategoryController::class, 'GetSubSubCategory'])->name('subsubcategory.ajax');
+
 
 
 
