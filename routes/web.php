@@ -147,6 +147,7 @@ Route::post('/thambnail/update', [ProductController::class, 'ThambnailImageUpdat
 Route::get('/multiimg/delete/{id}', [ProductController::class, 'MultiImageDelete'])->name('product.multiimg.delete');
 Route::get('/inactive/{id}', [ProductController::class, 'ProductInactive'])->name('product.inactive');
 Route::get('/active/{id}', [ProductController::class, 'ProductActive'])->name('product.active');
+Route::get('/delete/{id}', [ProductController::class, 'ProductDelete'])->name('product.delete');
 
  });
     
