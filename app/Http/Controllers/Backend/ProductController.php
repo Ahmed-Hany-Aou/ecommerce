@@ -93,12 +93,13 @@ class ProductController extends Controller
 		}	
 
 		public function EditProduct($id){
+			$multiImgs = MultiImg::where('product_id',$id)->get();
 			$categories = Category::latest()->get();
 			$brands = Brand::latest()->get();
 			$subcategory = SubCategory::latest()->get();
 			$subsubcategory = SubSubCategory::latest()->get();
 			$products = Product::findOrFail($id);
-			return view('backend.product.product_edit',compact('categories','brands','subcategory','subsubcategory','products'));
+			return view('backend.product.product_edit',compact('categories','brands','subcategory','subsubcategory','products','multiImgs'));
 		}
 		public function ProductDataUpdate(Request $request){
 			$product_id = $request->id;
@@ -137,8 +138,49 @@ class ProductController extends Controller
 				'alert-type' => 'success'
 			);
 			return redirect()->route('manage-product')->with($notification);
+
 		} // end method 
 	
+		/// Multiple Image Update
+	public function MultiImageUpdate(Request $request){
+		$imgs = $request->multi_img;
+		foreach ($imgs as $id => $img) {
+	    $imgDel = MultiImg::findOrFail($id);
+	    unlink($imgDel->photo_name);
+	     
+    	$make_name = hexdec(uniqid()).'.'.$img->getClientOriginalExtension();
+    	Image::make($img)->resize(917,1000)->save('upload/products/multi-image/'.$make_name);
+    	$uploadPath = 'upload/products/multi-image/'.$make_name;
+    	MultiImg::where('id',$id)->update([
+    		'photo_name' => $uploadPath,
+    		'updated_at' => Carbon::now(),
+    	]);
+	 } // end foreach
+       $notification = array(
+			'message' => 'Product Image Updated Successfully',
+			'alert-type' => 'info'
+		);
+		return redirect()->back()->with($notification);
+	} // end mehtod 
+/// Product Main Thambnail Update /// 
+public function ThambnailImageUpdate(Request $request){
+	$pro_id = $request->id;
+	$oldImage = $request->old_img;
+	unlink($oldImage);
+   $image = $request->file('product_thambnail');
+	   $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+	   Image::make($image)->resize(917,1000)->save('upload/products/thambnail/'.$name_gen);
+	   $save_url = 'upload/products/thambnail/'.$name_gen;
+	   Product::findOrFail($pro_id)->update([
+		   'product_thambnail' => $save_url,
+		   'updated_at' => Carbon::now(),
+	   ]);
+		$notification = array(
+		   'message' => 'Product Image Thambnail Updated Successfully',
+		   'alert-type' => 'info'
+	   );
+	   return redirect()->back()->with($notification);
+	} // end method
 	
 }
  
