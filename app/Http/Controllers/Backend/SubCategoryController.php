@@ -10,7 +10,7 @@ use App\Models\SubSubCategory;
 use Illuminate\Support\Str;
 
 
-class subCategoryController extends Controller
+class SubCategoryController extends Controller
 {
     public function SubCategoryView(){
 
