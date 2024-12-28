@@ -9,7 +9,7 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SliderController;
-
+use App\Http\Controllers\Frontend\LanguageController;
 
 use App\Models\User;
 
@@ -169,4 +169,7 @@ Route::prefix('slider')->group(function(){
     
     
     
-  
+  //// Frontend All Routes /////
+/// Multi Language All Routes ////
+Route::get('/language/hindi', [LanguageController::class, 'Hindi'])->name('hindi.language');
+Route::get('/language/english', [LanguageController::class, 'English'])->name('english.language');
