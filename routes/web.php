@@ -94,7 +94,7 @@ Route::prefix('brand')->group(function(){
 Route::get('/view', [CategoryController::class, 'CategoryView'])->name('all.category');
 Route::post('/store', [CategoryController::class, 'CategoryStore'])->name('category.store');  
 Route::get('/edit/{id}', [CategoryController::class, 'CategoryEdit'])->name('category.edit');
-Route::post('/category/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
+Route::post('/category/update/{id}', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
 
 
    

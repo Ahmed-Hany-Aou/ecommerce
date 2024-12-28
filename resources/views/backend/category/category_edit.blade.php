@@ -14,7 +14,7 @@
                         <div class="table-responsive">
                             <form method="POST" action="{{ route('category.update') }}">
                                 @csrf
-                                <input type="hidden" name="id" value="{{ $category->id }}">
+                                
                                 <div class="form-group">
                                     <h5>Category English <span class="text-danger">*</span></h5>
                                     <div class="controls">
