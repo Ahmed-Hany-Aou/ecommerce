@@ -8,13 +8,14 @@ use Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Category;
-
+use App\Models\Slider;
 
 class IndexController extends Controller
 {
     public function index(){
+		$sliders = Slider::where('status',1)->orderBy('id','DESC')->limit(3)->get();
     	$categories = Category::orderBy('category_name_en','ASC')->get();
-    	return view('frontend.index',compact('categories'));
+    	return view('frontend.index',compact('categories','sliders'));
 
     }
 
