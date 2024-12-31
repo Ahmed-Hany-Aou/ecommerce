@@ -1,17 +1,18 @@
 <?php
 
+use App\Models\User;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\AdminProfileController;
-use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SliderController;
-use App\Http\Controllers\Frontend\LanguageController;
 
-use App\Models\User;
+use App\Http\Controllers\Frontend\IndexController;
+use App\Http\Controllers\Frontend\LanguageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -169,12 +170,17 @@ Route::prefix('slider')->group(function(){
     
     
     
-  //// Frontend All Routes /////
+ //// Frontend All Routes /////
 /// Multi Language All Routes ////
-Route::get('/language/hindi', [LanguageController::class, 'Hindi'])->name('hindi.language');
-Route::get('/language/english', [LanguageController::class, 'English'])->name('english.language');
 
+Route::get('/language/hindi', [LanguageController::class, 'Hindi'])->name('hindi.language');
+
+Route::get('/language/english', [LanguageController::class, 'English'])->name('english.language');
 
 
 // Frontend Product Details Page url 
 Route::get('/product/details/{id}/{slug}', [IndexController::class, 'ProductDetails']);
+
+
+// Frontend Product Tags Page 
+Route::get('/product/tag/{tag}', [IndexController::class, 'TagWiseProduct']);
