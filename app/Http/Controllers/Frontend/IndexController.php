@@ -124,11 +124,37 @@ class IndexController extends Controller
 
 
 
-	public function TagWiseProduct($tag){
-		$products = Product::where('status',1)->where('product_tags_en',$tag)->where('product_tags_hin',$tag)->orderBy('id','DESC')->paginate(3);
-		$categories = Category::orderBy('category_name_en','ASC')->get();
-		return view('frontend.tags.tags_view',compact('products','categories'));
+	public function TagWiseProduct($tag)
+{
+    // Split the tag into words (separated by commas)
+    $tagWords = explode(',', $tag);
 
+    // Prepare the query to check if any of the words in the tag exist in either English or Hindi tags
+    $products = Product::where('status', 1)
+        ->where(function ($query) use ($tagWords) {
+            foreach ($tagWords as $word) {
+                $query->orWhere('product_tags_en', 'like', "%{$word}%")
+                      ->orWhere('product_tags_hin', 'like', "%{$word}%");
+            }
+        })
+        ->orderBy('id', 'DESC')
+        ->paginate(3);
+
+    // Get categories to display in the sidebar
+    $categories = Category::orderBy('category_name_en', 'ASC')->get();
+
+    return view('frontend.tags.tags_view', compact('products', 'categories'));
+}
+
+
+	
+
+
+  // Subcategory wise data
+	public function SubCatWiseProduct($subcat_id,$slug){
+		$products = Product::where('status',1)->where('subcategory_id',$subcat_id)->orderBy('id','DESC')->paginate(3);
+		$categories = Category::orderBy('category_name_en','ASC')->get();
+		return view('frontend.product.subcategory_view',compact('products','categories'));
 	}
 
 
