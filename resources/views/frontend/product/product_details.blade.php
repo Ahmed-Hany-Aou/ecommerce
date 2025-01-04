@@ -422,16 +422,10 @@
 	<label class="info-title control-label">Choose Color <span> </span></label>
 	<select class="form-control unicase-form-control selectpicker" style="display: none;">
 		<option selected="" disabled="">--Choose Color--</option>
-		@if(session()->get('language') == 'hindi') <!-- // not the same as the coures -->
-		@foreach($product_color_hin as $color)
-			<option value="{{ $color }}">{{ ucwords($color) }}</option>
-	@endforeach
-	@else
 		@foreach($product_color_en as $color)
 		<option value="{{ $color }}">{{ ucwords($color) }}</option>
 		 @endforeach
-		 @endif
-			</select> 
+	</select> 
 
 </div> <!-- // end form group -->
 		 
@@ -444,15 +438,9 @@
 	<label class="info-title control-label">Choose Size <span> </span></label>
 	<select class="form-control unicase-form-control selectpicker" style="display: none;">
 		<option selected="" disabled="">--Choose Size--</option>
-		@if(session()->get('language') == 'hindi') <!-- // not the same as the coures -->
-		@foreach($product_size_hin as $size)
-			<option value="{{ $size }}">{{ ucwords($size) }}</option>
-			@endforeach
-	@else
 		@foreach($product_size_en as $size)
 		<option value="{{ $size }}">{{ ucwords($size) }}</option>
 		 @endforeach
-		 @endif
 	</select> 
 	
 </div> <!-- // end form group -->
