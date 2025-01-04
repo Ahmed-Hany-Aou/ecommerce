@@ -56,8 +56,8 @@ class CategoryController extends Controller
 
 
 
-    public function CategoryUpdate(Request $request ,$id){
-        
+    public function CategoryUpdate(Request $request)
+{
     // Validate input
     $request->validate([
         'id' => 'required|exists:categories,id',
@@ -67,8 +67,8 @@ class CategoryController extends Controller
     ]);
 
     // Find category and update it
-    Category::findOrFail($id)->update([
-    
+    $category = Category::findOrFail($request->id);
+    $category->update([
         'category_name_en' => $request->category_name_en,
         'category_name_hin' => $request->category_name_hin,
         'category_slug_en' => Str::slug($request->category_name_en),

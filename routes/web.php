@@ -89,15 +89,11 @@ Route::prefix('brand')->group(function(){
 });
 
 
-  // Admin Category all Routes  
-
-
+// Admin Category all Routes  
 Route::get('/view', [CategoryController::class, 'CategoryView'])->name('all.category');
 Route::post('/store', [CategoryController::class, 'CategoryStore'])->name('category.store');  
 Route::get('/edit/{id}', [CategoryController::class, 'CategoryEdit'])->name('category.edit');
-Route::post('/category/update/{id}', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
-
-
+Route::post('/update', [CategoryController::class, 'CategoryUpdate'])->name('category.update');
    
 
 Route::prefix('category')->group(function () {
@@ -189,3 +185,7 @@ Route::get('/subcategory/product/{subcat_id}/{slug}', [IndexController::class, '
 
 // Frontend Sub-SubCategory wise Data
 Route::get('/subsubcategory/product/{subsubcat_id}/{slug}', [IndexController::class, 'SubSubCatWiseProduct']);
+
+
+// Product View Modal with Ajax
+Route::get('/product/view/modal/{id}', [IndexController::class, 'ProductViewAjax']);
