@@ -9,5 +9,6 @@ class Whishlist extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    
 
 }
