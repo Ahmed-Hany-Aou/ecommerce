@@ -1,8 +1,6 @@
 <?php
 use App\Models\User;
 
-
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\AdminProfileController;
@@ -307,3 +305,13 @@ Route::prefix('shipping')->group(function(){
     
      
     });
+
+
+    
+// Frontend Coupon Option
+
+Route::post('/coupon-apply', [CartController::class, 'CouponApply']);
+
+Route::get('/coupon-calculation', [CartController::class, 'CouponCalculation']);
+
+Route::get('/coupon-remove', [CartController::class, 'CouponRemove']);
