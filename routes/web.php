@@ -19,13 +19,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\User\CartPageController;
 use App\Http\Controllers\User\CheckoutController;
-
-
-
-
-
-
-
+use App\Http\Controllers\User\StripeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -224,6 +218,8 @@ Route::get('/wishlist', [WishlistController::class, 'ViewWishlist'])->name('wish
 Route::get('/get-wishlist-product', [WishlistController::class, 'GetWishlistProduct']);
 
 Route::get('/wishlist-remove/{id}', [WishlistController::class, 'RemoveWishlistProduct']);
+
+Route::post('/stripe/order', [StripeController::class, 'StripeOrder'])->name('stripe.order');
  
 
 });
